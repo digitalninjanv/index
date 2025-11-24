@@ -201,7 +201,12 @@ $ketnama = "Silahkan mengisi nama";
                         </a>
                     </td>
                   <td>
-                      <small> <a href="invoice.php?codx=<?php echo $data['codx']; ?>">Invoice</a> | <a href="full.php?codx=<?php echo $data['codx']; ?>">Full</a> | <a href="sum.php?codx=<?php echo $data['codx']; ?>">Sum</a> </small>
+                      <small>
+                        <a href="invoice.php?codx=<?php echo $data['codx']; ?>">Invoice</a> |
+                        <a href="full.php?codx=<?php echo $data['codx']; ?>">Full</a> |
+                        <a href="sum.php?codx=<?php echo $data['codx']; ?>">Sum</a> |
+                        <a href="harga.php?codx=<?php echo $data['codx']; ?>">Harga</a>
+                      </small>
 
                   </td>
                 </tr>
