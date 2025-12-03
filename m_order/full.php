@@ -40,6 +40,9 @@ $stmt_cap = $conn->prepare("SELECT * FROM m_cap WHERE id = :id");
 $stmt_cap->execute(['id' => $cap_id]);
 $cap = $stmt_cap->fetch(PDO::FETCH_ASSOC);
 
+$hasTtd = ($ttd && !empty($ttd['pic']));
+$hasCap = (!empty($cap_id) && $cap && !empty($cap['pic']));
+
 
 // 3. Fungsi Terbilang (Digunakan di halaman 1)
 function terbilang($angka) {
@@ -362,24 +365,26 @@ function terbilang($angka) {
                   <div style="font-weight:bold; margin-bottom: 5px;">REGARDS</div>
                   
                   <div style="height:100px; position: relative; display: flex; justify-content: center; align-items: center;">
-                      <?php if ($ttd && !empty($ttd['pic'])): ?>
-                          <img src="../../public/uploads/ttd/<?php echo $ttd['pic']; ?>" 
+                      <?php if ($hasTtd): ?>
+                          <img src="../../public/uploads/ttd/<?php echo $ttd['pic']; ?>"
                                style="height: 80px; position: absolute; z-index: 1;">
                       <?php endif; ?>
-                      
-                      <?php if ($cap && !empty($cap['pic'])): ?>
-                          <img src="../../public/uploads/cap/<?php echo $cap['pic']; ?>" 
-                               style="height: 80px; position: absolute; z-index: 2; opacity: 0.8;"> 
+
+                      <?php if ($hasCap): ?>
+                          <img src="../../public/uploads/cap/<?php echo $cap['pic']; ?>"
+                               style="height: 80px; position: absolute; z-index: 2; opacity: 0.8;">
                       <?php endif; ?>
                   </div>
 
-                  <div style="font-weight:bold; text-decoration: underline; margin-top:5px;">
-                    <?php echo htmlspecialchars($ttd['nama'] ?? ''); ?>
-                  </div>
+                  <?php if ($hasCap): ?>
+                      <div style="font-weight:bold; text-decoration: underline; margin-top:5px;">
+                        <?php echo htmlspecialchars($ttd['nama'] ?? ''); ?>
+                      </div>
 
-                  <div>
-                    <?php echo htmlspecialchars($ttd['des'] ?? ''); ?>
-                  </div>
+                      <div>
+                        <?php echo htmlspecialchars($ttd['des'] ?? ''); ?>
+                      </div>
+                  <?php endif; ?>
                 </td>
               </tr>
             </table>
@@ -393,24 +398,26 @@ function terbilang($angka) {
                   <div style="font-weight:bold; margin-bottom: 5px;">REGARDS</div>
                   
                   <div style="height:100px; position: relative; display: flex; justify-content: center; align-items: center;">
-                      <?php if ($ttd && !empty($ttd['pic'])): ?>
-                          <img src="../../public/uploads/ttd/<?php echo $ttd['pic']; ?>" 
+                      <?php if ($hasTtd): ?>
+                          <img src="../../public/uploads/ttd/<?php echo $ttd['pic']; ?>"
                                style="height: 80px; position: absolute; z-index: 1;">
                       <?php endif; ?>
-                      
-                      <?php if ($cap && !empty($cap['pic'])): ?>
-                          <img src="../../public/uploads/cap/<?php echo $cap['pic']; ?>" 
-                               style="height: 80px; position: absolute; z-index: 2; opacity: 0.8;"> 
+
+                      <?php if ($hasCap): ?>
+                          <img src="../../public/uploads/cap/<?php echo $cap['pic']; ?>"
+                               style="height: 80px; position: absolute; z-index: 2; opacity: 0.8;">
                       <?php endif; ?>
                   </div>
 
-                  <div style="font-weight:bold; text-decoration: underline; margin-top:5px;">
-                    <?php echo htmlspecialchars($ttd['nama'] ?? ''); ?>
-                  </div>
+                  <?php if ($hasCap): ?>
+                      <div style="font-weight:bold; text-decoration: underline; margin-top:5px;">
+                        <?php echo htmlspecialchars($ttd['nama'] ?? ''); ?>
+                      </div>
 
-                  <div>
-                    <?php echo htmlspecialchars($ttd['des'] ?? ''); ?>
-                  </div>
+                      <div>
+                        <?php echo htmlspecialchars($ttd['des'] ?? ''); ?>
+                      </div>
+                  <?php endif; ?>
                 </td>
               </tr>
             </table>

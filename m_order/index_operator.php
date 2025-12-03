@@ -637,7 +637,7 @@ while($data = $sql->fetch()) {
 
                     <div class="form-group">
                         <label class="control-label">Pilih Tanda Tangan :</label>
-                        <select id="rek_select" class="form-control">
+                        <select id="ttd_select" class="form-control">
                             <option value="">-- Pilih Tanda Tangan --</option>
                             <?php foreach ($ttds as $ttd): ?>
                                 <option value="<?php echo ($ttd['id']); ?>">
@@ -649,7 +649,7 @@ while($data = $sql->fetch()) {
 
                                       <div class="form-group">
                         <label class="control-label">Pilih Cap :</label>
-                        <select id="rek_select" class="form-control">
+                        <select id="cap_select" class="form-control">
                             <option value="">-- Pilih Cap --</option>
                             <?php foreach ($caps as $cap): ?>
                                 <option value="<?php echo ($cap['id']); ?>">
@@ -967,7 +967,17 @@ while($data = $sql->fetch()) {
             $("#address_edit").val($(this).attr('data-address'));
             $("#total_amount_edit").val($(this).attr('data-total_amount'));
             $("#muncul_rek_edit").val($(this).attr('data-muncul_rek'));
-            $("#reke_edit").val($(this).attr('data-reke'));
+            const rekId = $(this).attr('data-reke') || '';
+            const ttdId = $(this).attr('data-ttd_id') || '';
+            const capId = $(this).attr('data-cap_id') || '';
+
+            $("#reke_edit").val(rekId);
+            $("#ttd_id_edit").val(ttdId);
+            $("#cap_id_edit").val(capId);
+
+            $('#rek_select').val(rekId).trigger('change');
+            $('#ttd_select').val(ttdId).trigger('change');
+            $('#cap_select').val(capId).trigger('change');
             $('#modalinvoice').modal('show');
         });
         
@@ -991,13 +1001,23 @@ while($data = $sql->fetch()) {
   
      <script>
  $(function(){
-  $('#idshipper').select2({
+ $('#idshipper').select2({
     dropdownParent: $('#shipper')
   });
   $('#idconsignee').select2({
     dropdownParent: $('#consignee')
   });
-}); 
+
+  $('#rek_select').select2({
+    dropdownParent: $('#modalinvoice')
+  });
+  $('#ttd_select').select2({
+    dropdownParent: $('#modalinvoice')
+  });
+  $('#cap_select').select2({
+    dropdownParent: $('#modalinvoice')
+  });
+});
 </script>
 
 
