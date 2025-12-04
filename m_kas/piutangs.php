@@ -18,6 +18,7 @@ $master = "Piutang Shipper";
 $dba = "piutangs";
 $ket = "";
 $ketnama = "Silahkan mengisi nama";
+$piutang = 0;
 
 ?>
  
@@ -53,7 +54,7 @@ $ketnama = "Silahkan mengisi nama";
 
           <div class="box">
             <div class="box-header">
-              <h3 class="box-title">Data <?php echo $master; ?></h3>
+              <h3 class="box-title">Summary Piutang per Order</h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
@@ -61,10 +62,10 @@ $ketnama = "Silahkan mengisi nama";
                 <thead>
                 <tr>
                   <th>No</th>
-                  <th>Created</th>
+                  <th>Order ID</th>
+                  <th>Kode Order</th>
                   <th>Shipper</th>
-                  <th>Deskripsi <?php echo $ket; ?></th>
-                  <th>Nilai</th>
+                  <th>Total Piutang</th>
                   <th>Aksi</th>
                 </tr>
                 </thead>
@@ -72,55 +73,46 @@ $ketnama = "Silahkan mengisi nama";
 
                 <?php
                    $count = 1;
-				   
-                   $sql = $conn->prepare("SELECT * FROM `m_kas` WHERE shipper_id >= 1 AND stat = 4");
-                   $sql->execute();
-                   while($data=$sql->fetch()) {
+
+                   $summaryQuery = $conn->prepare("
+                    SELECT mk.order_id, SUM(mk.nilai) AS total_piutang, mo.codx, mo.nama AS order_name, u.nama AS shipper_nama
+                    FROM m_kas mk
+                    LEFT JOIN m_order mo ON mo.id = mk.order_id
+                    LEFT JOIN m_user u ON u.id = mo.shipper_id
+                    WHERE mk.shipper_id >= 1 AND mk.stat = 4 AND mk.order_id > 0
+                    GROUP BY mk.order_id, mo.codx, mo.nama, u.nama
+                    ORDER BY mk.order_id DESC
+                   ");
+                   $summaryQuery->execute();
+                   while($data=$summaryQuery->fetch()) {
                 ?>
 
                 <tr>
                   <td><?php echo $count; ?></td>
-                  <td><?php echo date('d-m-Y H:i:s', strtotime($data['created_at'])); ?></td>
-                  <?php
-                  $stmt = $conn->prepare("SELECT * FROM m_user WHERE id = '".$data['shipper_id']."'");
-                  $stmt->execute();
-                  $row = $stmt->fetch();
-                  ?>
-                  <td><?php echo $row['nama'];?></td>
-                  <td><?php echo $data['nama'];?></td>
-                  <td><?php echo "Rp. ".number_format($data['nilai'], 0). ",-"; ?></td>
-                  
+                  <td><?php echo $data['order_id']; ?></td>
+                  <td><?php echo $data['codx'] ? $data['codx'] : '-'; ?></td>
+                  <td><?php echo $data['shipper_nama'] ? $data['shipper_nama'] : '-'; ?></td>
+                  <td><?php echo "Rp. ".number_format($data['total_piutang'], 0). ",-"; ?></td>
+
                   <td>
-                  <button 
-                      data-id="<?= $data['id'] ?>" 
-                      data-created_at="<?= $data['created_at'] ?>" 
-                      data-nama="<?= $data['nama'] ?>" 
-                      data-nilai="<?= $data['nilai']?>"
-                      type="button" class="btn btn-light btn_update" data-toggle="modal">✎</button>
-                    
-                    <a class="btn btn-light" onclick="return confirm('are you want deleting data')" href="../../controller/<?php echo $dba;?>_controller.php?op=hapus&id=<?php echo $data['id']; ?>">❌</a>
-                  
-                  <a class="btn btn-light" onclick="return confirm('yakin akan melunaskan?')" href="../../controller/<?php echo $dba;?>_controller.php?op=selesai&id=<?php echo $data['id']; ?>">
-                     ✅
-                     
-                     </a>
+                    <a class="btn btn-primary btn-sm" href="piutangs_detail.php?order_id=<?php echo $data['order_id']; ?>">Lihat Detail</a>
                   </td>
                 </tr>
 
                 <?php
-                $piutang += $data['nilai'];
+                $piutang += $data['total_piutang'];
                 $count=$count+1;
-                } 
+                }
                 ?>
                 <b>Total Piutang = <?= "Rp. ".number_format($piutang,0).",-" ?></b> <br>
                 </tbody>
                 <tfoot>
                 <tr>
                   <th>No</th>
-                  <th>Created</th>
-                  <th>Nama</th>
-                  <th>Deskripsi <?php echo $ket; ?></th>
-                  <th>Nilai</th>
+                  <th>Order ID</th>
+                  <th>Kode Order</th>
+                  <th>Shipper</th>
+                  <th>Total Piutang</th>
                   <th>Aksi</th>
                 </tr>
                 </tfoot>
