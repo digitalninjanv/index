@@ -20,7 +20,7 @@ $ket = "";
 $ketnama = "Silahkan mengisi nama";
 
 ?>
- 
+
   <?php
   include '../header.php';
   include '../sidebar.php';
@@ -32,13 +32,13 @@ $ketnama = "Silahkan mengisi nama";
     <section class="content-header">
       <h1>
 
-        Master Data <?php echo $master; ?>
+        Summary Piutang per Order
       </h1>
       <p>piutang adalah pendapatan dari luar yang masih belum di kembalikan atau orang pribadi yang berhutang dan belum di kembalikan</p>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="#">Tables <?php echo $master; ?></a></li>
-        <li class="active">Master Data <?php echo $master; ?></li>
+        <li class="active">Summary Piutang per Order</li>
       </ol>
     </section>
 
@@ -46,14 +46,11 @@ $ketnama = "Silahkan mengisi nama";
     <section class="content">
       <div class="row">
         <div class="col-xs-12">
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tambah">
-            Tambah
-              </button>
           <!-- /.box -->
 
           <div class="box">
             <div class="box-header">
-              <h3 class="box-title">Master Data <?php echo $master; ?></h3>
+              <h3 class="box-title">Summary Piutang per Order</h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
@@ -61,10 +58,8 @@ $ketnama = "Silahkan mengisi nama";
                 <thead>
                 <tr>
                   <th>No</th>
-                  <th>Created</th>
-                  <th>Nama</th>
-                  <th>Deskripsi <?php echo $ket; ?></th>
-                  <th>Nilai</th>
+                  <th>ID Order</th>
+                  <th>Total Piutang</th>
                   <th>Aksi</th>
                 </tr>
                 </thead>
@@ -72,51 +67,33 @@ $ketnama = "Silahkan mengisi nama";
 
                 <?php
                    $count = 1;
-				   
-                   $sql = $conn->prepare("SELECT * FROM `m_kas` WHERE shipper_id = 0 AND stat = 4");
+                   $piutang = 0;
+
+                   $sql = $conn->prepare("SELECT order_id, SUM(nilai) AS total_piutang FROM `m_kas` WHERE stat = 4 GROUP BY order_id ORDER BY order_id DESC");
                    $sql->execute();
                    while($data=$sql->fetch()) {
                 ?>
 
                 <tr>
                   <td><?php echo $count; ?></td>
-                  <td><?php echo date('d-m-Y H:i:s', strtotime($data['created_at'])); ?></td>
-                  <td><?php echo $data['nama'];?></td>
-                  <td><?php echo $data['des'];?></td>
-                  <td><?php echo "Rp. ".number_format($data['nilai'], 0). ",-"; ?></td>
-                  
-                  <td>
-                  <button 
-                      data-id="<?= $data['id'] ?>" 
-                      data-created_at="<?= $data['created_at'] ?>" 
-                      data-nama="<?= $data['nama'] ?>" 
-                      data-des="<?= $data['des']?>"
-                      data-nilai="<?= $data['nilai']?>"
-                      type="button" class="btn btn-light btn_update" data-toggle="modal">✎</button>
-                    
-                    <a class="btn btn-light" onclick="return confirm('are you want deleting data')" href="../../controller/<?php echo $dba;?>_controller.php?op=hapus&id=<?php echo $data['id']; ?>">❌</a>
-                  
-                  <a class="btn btn-light" onclick="return confirm('yakin akan melunaskan?')" href="../../controller/<?php echo $dba;?>_controller.php?op=selesai&id=<?php echo $data['id']; ?>">
-                     ✅
-                     
-                     </a>
-                  </td>
+                  <td><?php echo $data['order_id']; ?></td>
+                  <td><?php echo "Rp. ".number_format($data['total_piutang'], 0). ",-"; ?></td>
+
+                  <td><a class="btn btn-info" href="piutang_detail.php?order_id=<?php echo $data['order_id']; ?>">Lihat</a></td>
                 </tr>
 
                 <?php
-                $piutang += $data['nilai'];
+                $piutang += $data['total_piutang'];
                 $count=$count+1;
-                } 
+                }
                 ?>
                 <b>Total Piutang = <?= "Rp. ".number_format($piutang,0).",-" ?></b> <br>
                 </tbody>
                 <tfoot>
                 <tr>
                   <th>No</th>
-                  <th>Created</th>
-                  <th>Nama</th>
-                  <th>Deskripsi <?php echo $ket; ?></th>
-                  <th>Nilai</th>
+                  <th>ID Order</th>
+                  <th>Total Piutang</th>
                   <th>Aksi</th>
                 </tr>
                 </tfoot>
