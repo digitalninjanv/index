@@ -105,6 +105,34 @@ ALTER TABLE `m_kas`
 --
 ALTER TABLE `m_kas`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+
+
+-- --------------------------------------------------------
+
+-- Struktur dari tabel `m_order_deadline`
+
+CREATE TABLE `m_order_deadline` (
+  `id` int NOT NULL,
+  `order_id` int NOT NULL,
+  `deadline_date` date NOT NULL,
+  `notes` varchar(255) DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Indeks untuk tabel `m_order_deadline`
+--
+ALTER TABLE `m_order_deadline`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `order_id` (`order_id`);
+
+--
+-- AUTO_INCREMENT untuk tabel `m_order_deadline`
+--
+ALTER TABLE `m_order_deadline`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
